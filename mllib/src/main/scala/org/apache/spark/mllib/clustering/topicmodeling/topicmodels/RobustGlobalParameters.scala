@@ -23,4 +23,5 @@ package org.apache.spark.mllib.clustering.topicmodeling.topicmodels
  */
 class RobustGlobalParameters(phi : Array[Array[Float]],
                              alphabetSize: Int,
-                             background : Array[Float] ) extends GlobalParameters(phi, alphabetSize)
+                             val background : Array[Float] )
+  extends GlobalParameters(phi, alphabetSize)

@@ -7,19 +7,20 @@ import org.apache.spark.mllib.clustering.topicmodeling.topicmodels.regulaizers.{
 /**
  * Created by valerij on 6/27/14.
  */
-class RobustPLSASuite extends AbstractTopicModelSuite {
-    test ("feasibility") {
-        val numberOfTopics = 2
-        val numberOfIterations = 10
+class RobustPLSASuite extends AbstractTopicModelSuite[RobustDocumentParameters,
+                                              RobustGlobalParameters] {
+  test("feasibility") {
+    val numberOfTopics = 2
+    val numberOfIterations = 10
 
-        val plsa = new RobustPLSA(sc,
-            numberOfTopics,
-            numberOfIterations,
-            new Random(),
-            new SymmetricDirichletDocumentOverTopicDistributionRegularizer(0.2f),
-            new SymmetricDirichletTopicRegularizer(0.2f))
+    val plsa = new RobustPLSA(sc,
+      numberOfTopics,
+      numberOfIterations,
+      new Random(),
+      new SymmetricDirichletDocumentOverTopicDistributionRegularizer(0.2f),
+      new SymmetricDirichletTopicRegularizer(0.2f))
 
-        testPLSA(plsa)
-    }
+    testPLSA(plsa)
+  }
 
 }

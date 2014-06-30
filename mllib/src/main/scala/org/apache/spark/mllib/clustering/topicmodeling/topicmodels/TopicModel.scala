@@ -1,8 +1,25 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.apache.spark.mllib.clustering.topicmodeling.topicmodels
 
 import org.apache.spark.broadcast.Broadcast
-import org.apache.spark.rdd.RDD
 import org.apache.spark.mllib.clustering.topicmodeling.documents.Document
+import org.apache.spark.rdd.RDD
 
 
 /**
@@ -11,15 +28,15 @@ import org.apache.spark.mllib.clustering.topicmodeling.documents.Document
  * Date: 2/13/13
  * Time: 5:56 PM
  */
-
 /**
  * topic modeling interface
  */
-trait TopicModel {
-    /**
-     *
-     * @param documents  -- document collection
-     * @return a pair of theta (documents to topic) and phi (words to topics)
-     */
-    def infer(documents: RDD[Document]): (RDD[TopicDistribution], Broadcast[Array[Array[Float]]])
+trait TopicModel[DocumentParameterType <: DocumentParameters, 
+                  GlobalParameterType <: GlobalParameters] {
+  /**
+   *
+   * @param documents  -- document collection
+   * @return a pair of rdd of document parameters global parameters
+   */
+  def infer(documents: RDD[Document]): (RDD[DocumentParameterType], GlobalParameterType)
 }

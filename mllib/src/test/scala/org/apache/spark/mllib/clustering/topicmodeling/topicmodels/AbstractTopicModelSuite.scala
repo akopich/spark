@@ -7,28 +7,30 @@ import org.scalatest.FunSuite
 /**
  * Created by valerij on 6/27/14.
  */
-trait AbstractTopicModelSuite extends FunSuite with LocalSparkContext {
+trait AbstractTopicModelSuite[DocumentParameterType <: DocumentParameters,
+GlobalParameterType <: GlobalParameters] extends FunSuite with LocalSparkContext {
 
-    val EPS = 1e-5
+  val EPS = 1e-5
 
-    def testPLSA(plsa : TopicModel) {
-        val rawDocuments = sc.parallelize(Seq("a b a", "x y y z", "a b z x ").map(_.split(" ").toSeq))
+  def testPLSA(plsa: TopicModel[DocumentParameterType,GlobalParameterType]) {
+    val rawDocuments = sc.parallelize(Seq("a b a", "x y y z", "a b z x ").map(_.split(" ").toSeq))
 
-        val docs = Enumerator.numerate(rawDocuments, 0)
+    val docs = Enumerator.numerate(rawDocuments, 0)
 
-        val (theta, phiBC) = plsa.infer(docs)
-        val phi = phiBC.value
+    val (theta, global) = plsa.infer(docs)
+    val phi = global.phi
 
-        for (topic <- phi) assert( doesSumEqualToOne(topic), "phi matrix is not normalized" )
+    for (topic <- phi) assert(doesSumEqualToOne(topic), "phi matrix is not normalized")
 
-        assert( phi.forall(_.forall(_ >= 0f) ), "phi matrix is non-non-negative" )
+    assert(phi.forall(_.forall(_ >= 0f)), "phi matrix is non-non-negative")
 
-        for (documentDistributionOverTopics <- theta) assert(doesSumEqualToOne(documentDistributionOverTopics.probabilities), "theta is not normalized")
+    for (documentParameter <- theta.collect)
+      assert(doesSumEqualToOne(documentParameter.theta), "theta is not normalized")
 
-        assert(theta.collect.forall(_.probabilities.forall(_ >= 0f)) , "theta is not non-non-negative")
+    assert(theta.collect.forall(_.theta.forall(_ >= 0f)), "theta is not non-non-negative")
 
-    }
+  }
 
-    private def doesSumEqualToOne(arr : Array[Float]) = math.abs(arr.sum - 1) < EPS
+  private def doesSumEqualToOne(arr: Array[Float]) = math.abs(arr.sum - 1) < EPS
 
 }

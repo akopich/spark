@@ -58,7 +58,8 @@ class RobustDocumentParameters(document: Document,
     Z
   }
 
-  private[topicmodels] def wordsFromTopicsAndWordsFromBackground(topics: Broadcast[Array[Array[Float]]],
+  private[topicmodels] def wordsFromTopicsAndWordsFromBackground(
+                                            topics: Broadcast[Array[Array[Float]]],
                                             background: Array[Float], eps: Float,
                                             gamma: Float):
         (Array[SparseVector[Float]], SparseVector[Float]) = {

@@ -56,8 +56,7 @@ object Enumerator {
 
     val words = wordsMap.keys.toArray.sorted
 
-    val tokens = new SparseVector[Short](words, words.map(word => wordsMap(word).toShort),
-      alphabet.size())
+    val tokens = new SparseVector[Int](words, words.map(word => wordsMap(word)), alphabet.size())
     new Document(tokens, alphabet.size())
   }
 

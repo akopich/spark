@@ -31,4 +31,4 @@ import breeze.linalg.SparseVector
  *               Non-zero value equals to the number of time the words is included in the document.
  * @param alphabetSize number of different words in the collections
  */
-class Document(val tokens: SparseVector[Short], val alphabetSize: Int) extends Serializable
+class Document(val tokens: SparseVector[Int], val alphabetSize: Int) extends Serializable

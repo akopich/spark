@@ -42,7 +42,7 @@ trait AbstractPLSA[DocumentParameterType <: DocumentParameters,
                                       parameters: RDD[DocumentParameterType],
                                       collectionLength: Int,
                                       wordGivenModel:
-                                          DocumentParameterType => (Int, Short) => Float) = {
+                                          DocumentParameterType => (Int, Int) => Float) = {
     math.exp(-(parameters.aggregate(0f)((thatOne, otherOne) => thatOne +
       singleDocumentLikelihood(otherOne, topicsBC, wordGivenModel(otherOne)),
       (thatOne, otherOne) => thatOne + otherOne) + topicRegularizer(topicsBC.value)) /
@@ -56,7 +56,7 @@ trait AbstractPLSA[DocumentParameterType <: DocumentParameters,
 
   protected def singleDocumentLikelihood(parameter: DocumentParameters,
                                          topicsBC: Broadcast[Array[Array[Float]]],
-                                         wordGivenModel: ((Int, Short) => Float)) = {
+                                         wordGivenModel: ((Int, Int) => Float)) = {
     sum(parameter.document.tokens.mapActivePairs(wordGivenModel)) +
       parameter.priorThetaLogProbability
   }

@@ -38,8 +38,8 @@ class DocumentParameters(val document: Document,
     val numberOfTopics = topicsValue.size
 
     document.tokens.mapActivePairs { case (word, n) =>
-      (0 until numberOfTopics).foldLeft(0f)((sum, topic) => sum + topicsValue(topic)(word) *
-        theta(topic))
+      (0 until numberOfTopics).foldLeft(0f)((sum, topic) =>
+        sum + topicsValue(topic)(word) * theta(topic))
     }
   }
 
@@ -56,7 +56,8 @@ class DocumentParameters(val document: Document,
     forWithIndex(theta)((topicWeight, topicNum) =>
       array(topicNum) = document.tokens.mapActivePairs { case (word,
       num) => num * topics.value(topicNum)(word) * topicWeight / Z(word)
-      })
+      }
+    )
     array
   }
 

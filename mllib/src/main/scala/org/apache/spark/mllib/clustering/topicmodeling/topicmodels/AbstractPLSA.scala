@@ -41,16 +41,16 @@ private[topicmodels] trait AbstractPLSA[DocumentParameterType <: DocumentParamet
                                       collectionLength: Int,
                                       wordGivenModel:
                                           DocumentParameterType => (Int, Int) => Float) = {
-    math.exp(-(parameters.aggregate(0f)((thatOne, otherOne) => thatOne +
-      singleDocumentLikelihood(otherOne, topicsBC, wordGivenModel(otherOne)),
+    math.exp(-(parameters.aggregate(0f)((thatOne, otherOne) =>
+      thatOne + singleDocumentLikelihood(otherOne, topicsBC, wordGivenModel(otherOne)),
       (thatOne, otherOne) => thatOne + otherOne) + topicRegularizer(topicsBC.value)) /
       collectionLength)
   }
 
   protected def getAlphabetSize(documents: RDD[Document]) = documents.first().alphabetSize
 
-  protected def getCollectionLength(documents: RDD[Document]) = documents.map(_.tokens
-    .activeSize).reduce(_ + _)
+  protected def getCollectionLength(documents: RDD[Document]) =
+    documents.map(_.tokens.activeSize).reduce(_ + _)
 
   protected def singleDocumentLikelihood(parameter: DocumentParameters,
                                          topicsBC: Broadcast[Array[Array[Float]]],
@@ -62,14 +62,14 @@ private[topicmodels] trait AbstractPLSA[DocumentParameterType <: DocumentParamet
   protected def probabilityOfWordGivenTopic(word: Int, parameter: DocumentParameters,
                                             topicsBC: Broadcast[Array[Array[Float]]]) = {
     var underLog = 0f
-    for (topic <- 0 until numberOfTopics) underLog +=
-      parameter.theta(topic) * topicsBC.value(topic)(word)
+    for (topic <- 0 until numberOfTopics) {
+      underLog += parameter.theta(topic) * topicsBC.value(topic)(word)
+    }
     underLog
   }
 
   protected def getInitialTopics(alphabetSize: Int) = {
-    val topics =
-      Array.fill[Array[Float]](numberOfTopics)(Array.fill[Float](alphabetSize)(random.nextFloat))
+    val topics = Array.fill[Float](numberOfTopics, alphabetSize)(random.nextFloat)
     normalize(topics)
     sc.broadcast(topics)
   }

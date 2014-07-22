@@ -57,15 +57,15 @@ class GlobalCounters(val wordsFromTopics: Array[Array[Float]], val alphabetSize:
     val wordsFromTopic = that.wordsFromTopics(topics)
 
     wordsFromTopic.zip(wordsFromTopics).foreach { case (topic, words) =>
-      topic.activeIterator.foreach{ case (word, num) => words(word) += num }
+      topic.activeIterator.foreach{ case (word, num) =>
+        words(word) += num
+      }
     }
     this
   }
 }
 
 private[topicmodels] object GlobalCounters {
-  def apply(topicNum: Int, alphabetSize: Int) = {
-    val topicWords = (0 until topicNum).map(i => new Array[Float](alphabetSize)).toArray
-    new GlobalCounters(topicWords, alphabetSize)
-  }
+  def apply(topicNum: Int, alphabetSize: Int) =
+    new GlobalCounters(Array.ofDim[Float](topicNum, alphabetSize), alphabetSize)
 }

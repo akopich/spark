@@ -37,7 +37,9 @@ class RobustGlobalCounters(wordsFromTopic: Array[Array[Float]],
   def + (that: RobustGlobalCounters) = {
     super. + (that)
 
-    (0 until alphabetSize).foreach(i => backgroundWords(i) += that.backgroundWords(i))
+    for (i <- 0 until alphabetSize) {
+      backgroundWords(i) += that.backgroundWords(i)
+    }
 
     new RobustGlobalCounters(wordsFromTopic, backgroundWords, alphabetSize)
   }
@@ -62,8 +64,8 @@ class RobustGlobalCounters(wordsFromTopic: Array[Array[Float]],
     val (wordsFromTopicInDoc, wordsFromBackground) =
       that.wordsFromTopicsAndWordsFromBackground(topics, background, eps: Float, gamma)
 
-    wordsFromTopicInDoc.zip(wordsFromTopic).foreach {
-      case (topic, words) => topic.activeIterator.foreach{ case (word, num) =>
+    wordsFromTopicInDoc.zip(wordsFromTopic).foreach { case (topic, words) =>
+      topic.activeIterator.foreach { case (word, num) =>
         words(word) += num
       }
     }

@@ -42,7 +42,8 @@ class TObjectIntHashMapSerializer extends Serializer[TObjectIntHashMap[Object]] 
 
     val map = new TObjectIntHashMap[Object]()
 
-    keys.zip(values).map { case (key, value) => map.put(key, value)
+    keys.zip(values).map { case (key, value) =>
+      map.put(key, value)
     }
     map
   }

@@ -44,10 +44,9 @@ class RobustDocumentParameters(document: Document,
     val topicsValue = topics.value
     val numberOfTopics = topicsValue.size
 
-    var sum = 0f
     val Z = document.tokens.mapActivePairs { case (word, n) =>
-      sum = (0 until numberOfTopics).foldLeft(0f)((sum, topic) => sum + topicsValue(topic)(word)
-        * theta(topic))
+      val sum = (0 until numberOfTopics).foldLeft(0f)((sum, topic) =>
+        sum + topicsValue(topic)(word) * theta(topic))
       (eps * noise(word) + gamma * background(word) + sum) / (1 + eps + gamma)
     }
     Z
@@ -66,14 +65,15 @@ class RobustDocumentParameters(document: Document,
 
   protected def wordToBackgroundCnt(background: Array[Float], eps: Float, gamma: Float,
                           Z: SparseVector[Float]): SparseVector[Float] = {
-    document.tokens.mapActivePairs { case (word, num) => num * background(word) * gamma / Z(word)
+    document.tokens.mapActivePairs { case (word, num) =>
+      num * background(word) * gamma / Z(word)
     }
   }
 
 
   protected def getNoise(eps: Float, Z: SparseVector[Float]) = {
-    val newWordsFromNoise = document.tokens.mapActivePairs { case (word,
-    num) => eps * noise(word) * num / Z(word)
+    val newWordsFromNoise = document.tokens.mapActivePairs { case (word,num) =>
+      eps * noise(word) * num / Z(word)
     }
 
     val noiseWordsSum = sum(newWordsFromNoise)
@@ -104,7 +104,7 @@ class RobustDocumentParameters(document: Document,
 /**
  * companion object of DocumentParameters. Create new DocumentParameters and contain some methods
  */
-object RobustDocumentParameters extends SparseVectorFasterSum {
+private[topicmodels] object RobustDocumentParameters extends SparseVectorFasterSum {
   /**
    * create new DocumentParameters
    * @param document
@@ -113,7 +113,10 @@ object RobustDocumentParameters extends SparseVectorFasterSum {
    * @param eps weight of noise
    * @return new DocumentParameters
    */
-  def apply(document: Document, numberOfTopics: Int, gamma: Float, eps: Float,
+  def apply(document: Document,
+            numberOfTopics: Int,
+            gamma: Float,
+            eps: Float,
             regularizer: DocumentOverTopicDistributionRegularizer) = {
     val wordsNum = sum(document.tokens)
     val noise = document.tokens.mapActiveValues(word => 1f / wordsNum)

@@ -97,8 +97,9 @@ class RobustPLSA(@transient protected val sc: SparkContext,
       logInfo("Interation number " + numberOfIteration)
       logInfo("Perplexity=" + perplexity(topicsBC, parameters, background, collectionLength))
     }
-    if (numberOfIteration == numberOfIterations) (parameters, topicsBC, background)
-    else {
+    if (numberOfIteration == numberOfIterations) {
+      (parameters, topicsBC, background)
+    } else {
       val newParameters = parameters.map(parameter =>
         parameter.getNewTheta(topicsBC, background, eps, gamma)).cache()
       val globalCounters = getGlobalCounters(parameters, topicsBC, background, alphabetSize)

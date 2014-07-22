@@ -72,12 +72,10 @@ class PLSA(@transient protected val sc: SparkContext,
 
 
   private def newIteration(parameters: RDD[DocumentParameters],
-                           topicsBC: Broadcast[Array[Array[Float]]],
-                           alphabetSize: Int,
-                           collectionLength: Int,
-                           numberOfIteration: Int):
-  (RDD[DocumentParameters], Broadcast[Array[Array[Float]]]) = {
-
+       topicsBC: Broadcast[Array[Array[Float]]],
+       alphabetSize: Int,
+       collectionLength: Int,
+       numberOfIteration: Int): (RDD[DocumentParameters], Broadcast[Array[Array[Float]]]) = {
     if (computePpx) {
       logInfo("Interation number " + numberOfIteration)
       logInfo("Perplexity=" + perplexity(topicsBC, parameters, collectionLength))

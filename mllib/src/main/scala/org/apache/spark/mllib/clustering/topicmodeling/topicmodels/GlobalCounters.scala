@@ -51,8 +51,8 @@ private[topicmodels] class GlobalCounters(val wordsFromTopics: Array[Array[Float
    * @return GlobalParameters
    */
   private[topicmodels] def add(that: DocumentParameters,
-                               topics: Broadcast[Array[Array[Float]]],
-                               alphabetSize: Int) = {
+     topics: Broadcast[Array[Array[Float]]],
+     alphabetSize: Int) = {
 
     val wordsFromTopic = that.wordsFromTopics(topics)
 

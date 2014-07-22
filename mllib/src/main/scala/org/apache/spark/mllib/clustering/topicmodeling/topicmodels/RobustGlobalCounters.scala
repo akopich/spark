@@ -55,11 +55,11 @@ private[topicmodels] class RobustGlobalCounters(wordsFromTopic: Array[Array[Floa
    * @return GlobalParameters
    */
   def add(that: RobustDocumentParameters,
-          topics: Broadcast[Array[Array[Float]]],
-          background: Array[Float],
-          eps: Float,
-          gamma: Float,
-          alphabetSize: Int) = {
+      topics: Broadcast[Array[Array[Float]]],
+      background: Array[Float],
+      eps: Float,
+      gamma: Float,
+      alphabetSize: Int) = {
 
     val (wordsFromTopicInDoc, wordsFromBackground) =
       that.wordsFromTopicsAndWordsFromBackground(topics, background, eps: Float, gamma)

@@ -53,10 +53,9 @@ class RobustDocumentParameters(document: Document,
   }
 
   private[topicmodels] def wordsFromTopicsAndWordsFromBackground(
-                                            topics: Broadcast[Array[Array[Float]]],
-                                            background: Array[Float], eps: Float,
-                                            gamma: Float):
-        (Array[SparseVector[Float]], SparseVector[Float]) = {
+      topics: Broadcast[Array[Array[Float]]],
+      background: Array[Float], eps: Float,
+      gamma: Float): (Array[SparseVector[Float]], SparseVector[Float]) = {
     val Z = getZ(topics, background, eps, gamma)
 
     (super.wordsToTopicCnt(topics, Z), wordToBackgroundCnt(background, eps, gamma, Z))
@@ -64,7 +63,7 @@ class RobustDocumentParameters(document: Document,
 
 
   protected def wordToBackgroundCnt(background: Array[Float], eps: Float, gamma: Float,
-                          Z: SparseVector[Float]): SparseVector[Float] = {
+      Z: SparseVector[Float]): SparseVector[Float] = {
     document.tokens.mapActivePairs { case (word, num) =>
       num * background(word) * gamma / Z(word)
     }
@@ -88,8 +87,10 @@ class RobustDocumentParameters(document: Document,
   /**
    * calculates a new distribution of this document by topic, corresponding to the new topics
    */
-  def getNewTheta(topicsBC: Broadcast[Array[Array[Float]]], background: Array[Float], eps: Float,
-                  gamma: Float) = {
+  def getNewTheta(topicsBC: Broadcast[Array[Array[Float]]],
+      background: Array[Float],
+      eps: Float,
+      gamma: Float) = {
     val Z = getZ(topicsBC, background, eps, gamma)
 
     super.assignNewTheta(topicsBC, Z)
@@ -114,10 +115,10 @@ private[topicmodels] object RobustDocumentParameters extends SparseVectorFasterS
    * @return new DocumentParameters
    */
   def apply(document: Document,
-            numberOfTopics: Int,
-            gamma: Float,
-            eps: Float,
-            regularizer: DocumentOverTopicDistributionRegularizer) = {
+      numberOfTopics: Int,
+      gamma: Float,
+      eps: Float,
+      regularizer: DocumentOverTopicDistributionRegularizer) = {
     val wordsNum = sum(document.tokens)
     val noise = document.tokens.mapActiveValues(word => 1f / wordsNum)
 

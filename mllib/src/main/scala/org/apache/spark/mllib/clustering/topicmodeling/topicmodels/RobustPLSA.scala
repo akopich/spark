@@ -60,8 +60,8 @@ class RobustPLSA(@transient protected val sc: SparkContext,
                                 with Serializable {
 
 
-  override def infer(documents: RDD[Document]):
-                              (RDD[RobustDocumentParameters], RobustGlobalParameters) = {
+  override def infer(documents: RDD[Document])
+      :(RDD[RobustDocumentParameters], RobustGlobalParameters) = {
     val alphabetSize = getAlphabetSize(documents)
     val collectionLength = getCollectionLength(documents)
 

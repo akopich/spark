@@ -32,7 +32,7 @@ import org.apache.spark.mllib.clustering.topicmodeling.topicmodels.regulaizers.D
 class DocumentParameters(val document: Document,
                          val theta: Array[Float],
                          private val regularizer: DocumentOverTopicDistributionRegularizer)
-  extends Serializable {
+    extends Serializable {
   protected def getZ(topics: Broadcast[Array[Array[Float]]]) = {
     val topicsValue = topics.value
     val numberOfTopics = topicsValue.size
@@ -51,7 +51,7 @@ class DocumentParameters(val document: Document,
   }
 
   private[topicmodels] def wordsToTopicCnt(topics: Broadcast[Array[Array[Float]]],
-                                           Z: SparseVector[Float]): Array[SparseVector[Float]] = {
+      Z: SparseVector[Float]): Array[SparseVector[Float]] = {
     val array = Array.ofDim[SparseVector[Float]](theta.size)
     forWithIndex(theta)((topicWeight, topicNum) =>
       array(topicNum) = document.tokens.mapActivePairs { case (word,
@@ -71,7 +71,7 @@ class DocumentParameters(val document: Document,
   }
 
   private[topicmodels] def assignNewTheta(topics: Broadcast[Array[Array[Float]]],
-                                          Z: SparseVector[Float]) {
+      Z: SparseVector[Float]) {
     val newTheta: Array[Float] = {
       val array = Array.ofDim[Float](theta.size)
       forWithIndex(theta)((weight, topicNum) => array(topicNum) = weight * document.tokens
@@ -103,7 +103,7 @@ class DocumentParameters(val document: Document,
 private[topicmodels] object DocumentParameters extends SparseVectorFasterSum {
 
   def apply(document: Document, numberOfTopics: Int,
-            regularizer: DocumentOverTopicDistributionRegularizer) = {
+      regularizer: DocumentOverTopicDistributionRegularizer) = {
     val theta = getTheta(numberOfTopics)
     new DocumentParameters(document, theta, regularizer)
   }

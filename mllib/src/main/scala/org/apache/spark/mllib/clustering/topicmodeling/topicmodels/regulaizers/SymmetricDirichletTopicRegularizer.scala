@@ -25,7 +25,7 @@ package org.apache.spark.mllib.clustering.topicmodeling.topicmodels.regulaizers
  * @param alpha - parmeter of Dirichlet distribution
  */
 class SymmetricDirichletTopicRegularizer(protected val alpha: Float) extends TopicsRegularizer
-      with MatrixInPlaceModification with SymmetricDirichletHelper {
+    with MatrixInPlaceModification with SymmetricDirichletHelper {
   override def apply(topics: Array[Array[Float]]): Float = topics.foldLeft(0f)((sum,
                                                                                 x) => sum +
     dirichletLogLikelihood(x))

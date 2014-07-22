@@ -17,7 +17,6 @@
 
 package org.apache.spark.mllib.clustering.topicmodeling.topicmodels
 
-import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.mllib.clustering.topicmodeling.documents.Document
 import org.apache.spark.rdd.RDD
 

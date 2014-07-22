@@ -18,6 +18,7 @@
 package org.apache.spark.mllib.clustering.topicmodeling.topicmodels
 
 import breeze.linalg.SparseVector
+
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.mllib.clustering.topicmodeling.documents.Document
 import org.apache.spark.mllib.clustering.topicmodeling.topicmodels.regulaizers.DocumentOverTopicDistributionRegularizer

@@ -20,6 +20,7 @@ package org.apache.spark.mllib.clustering.topicmodeling.topicmodels
 import java.util.Random
 
 import breeze.linalg.sum
+
 import org.apache.spark.SparkContext
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.mllib.clustering.topicmodeling.documents.Document

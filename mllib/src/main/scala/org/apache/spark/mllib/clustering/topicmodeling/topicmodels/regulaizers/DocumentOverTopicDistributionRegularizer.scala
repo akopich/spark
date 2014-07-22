@@ -36,7 +36,6 @@ trait DocumentOverTopicDistributionRegularizer extends Serializable with MatrixI
    * @param oldTheta -- a distribution of the document over topics obtained in the previous
    *                 iterations
    */
-  def regularize(thetaCnt: Array[Float], oldTheta: Array[Float]): Unit = shift(thetaCnt, (x,
-                                                                                          i) => x
-    (i) = math.max(0, x(i)))
+  def regularize(thetaCnt: Array[Float], oldTheta: Array[Float]): Unit =
+    shift(thetaCnt, (x,i) => x(i) = math.max(0, x(i)))
 }

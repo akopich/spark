@@ -21,9 +21,6 @@ import java.util.Random
 
 import org.apache.spark.mllib.clustering.topicmodeling.topicmodels.regulaizers.{SymmetricDirichletDocumentOverTopicDistributionRegularizer, SymmetricDirichletTopicRegularizer}
 
-/**
- * Created by valerij on 6/27/14.
- */
 class RobustPLSASuite extends AbstractTopicModelSuite[RobustDocumentParameters,
                                               RobustGlobalParameters] {
   test("feasibility") {

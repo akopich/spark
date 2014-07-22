@@ -17,15 +17,13 @@
 
 package org.apache.spark.mllib.clustering.topicmodeling.topicmodels
 
-import org.apache.spark.mllib.clustering.topicmodeling.documents.Enumerator
-import org.apache.spark.mllib.util.LocalSparkContext
 import org.scalatest.FunSuite
 
-/**
- * Created by valerij on 6/27/14.
- */
+import org.apache.spark.mllib.clustering.topicmodeling.documents.Enumerator
+import org.apache.spark.mllib.util.LocalSparkContext
+
 trait AbstractTopicModelSuite[DocumentParameterType <: DocumentParameters,
-GlobalParameterType <: GlobalParameters] extends FunSuite with LocalSparkContext {
+    GlobalParameterType <: GlobalParameters] extends FunSuite with LocalSparkContext {
 
   val EPS = 1e-5
 

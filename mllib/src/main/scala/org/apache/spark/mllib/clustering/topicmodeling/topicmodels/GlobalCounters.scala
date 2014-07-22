@@ -27,8 +27,8 @@ import org.apache.spark.broadcast.Broadcast
  * @param wordsFromTopics
  * @param alphabetSize
  */
-class GlobalCounters(val wordsFromTopics: Array[Array[Float]], val alphabetSize: Int)
-  extends Serializable {
+private[topicmodels] class GlobalCounters(val wordsFromTopics: Array[Array[Float]],
+                                          val alphabetSize: Int) extends Serializable {
 
   /**
    * merges two GlobalParameters into a single one

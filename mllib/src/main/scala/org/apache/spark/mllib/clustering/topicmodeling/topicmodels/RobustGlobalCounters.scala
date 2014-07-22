@@ -26,7 +26,7 @@ import org.apache.spark.broadcast.Broadcast
  * @param backgroundWords background topics counter
  * @param alphabetSize
  */
-class RobustGlobalCounters(wordsFromTopic: Array[Array[Float]],
+private[topicmodels] class RobustGlobalCounters(wordsFromTopic: Array[Array[Float]],
                            val backgroundWords: Array[Float],
                            alphabetSize: Int) extends GlobalCounters(wordsFromTopic, alphabetSize) {
 

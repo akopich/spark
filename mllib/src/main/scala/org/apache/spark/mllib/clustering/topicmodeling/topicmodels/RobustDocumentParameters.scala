@@ -23,12 +23,6 @@ import org.apache.spark.mllib.clustering.topicmodeling.documents.Document
 import org.apache.spark.mllib.clustering.topicmodeling.topicmodels.regulaizers.DocumentOverTopicDistributionRegularizer
 
 /**
- * Created with IntelliJ IDEA.
- * User: padre
- * Date: 30.08.13
- * Time: 22:05
- */
-/**
  * the class contains document parameter in Robust PLSA model
  *
  * @param document

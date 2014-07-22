@@ -24,12 +24,6 @@ import org.apache.spark.rdd.RDD
 
 
 /**
- * Created with IntelliJ IDEA.
- * User: padre
- * Date: 15.11.13
- * Time: 20:41
- */
-/**
  * This object numerates tokens. E.g. it replaces a word with its order number. It also
  * calculates the number of unique words
  */

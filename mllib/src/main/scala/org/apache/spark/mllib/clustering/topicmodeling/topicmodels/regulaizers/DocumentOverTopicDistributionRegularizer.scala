@@ -19,9 +19,6 @@
 package org.apache.spark.mllib.clustering.topicmodeling.topicmodels.regulaizers
 
 /**
- * Created by valerij on 6/26/14.
- */
-/**
  * Defines a prior distribution (possibly, improper) on \Theta matrix row (a document over topics)
  */
 trait DocumentOverTopicDistributionRegularizer extends Serializable with MatrixInPlaceModification {

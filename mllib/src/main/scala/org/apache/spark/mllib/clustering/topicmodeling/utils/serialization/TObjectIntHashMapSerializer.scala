@@ -21,13 +21,6 @@ import com.esotericsoftware.kryo.io.{Input, Output}
 import com.esotericsoftware.kryo.{Kryo, Serializer}
 import gnu.trove.map.hash.TObjectIntHashMap
 
-/**
- * Created with IntelliJ IDEA.
- * User: valerij
- * Date: 09.09.13
- * Time: 20:13
- * To change this template use File | Settings | File Templates.
- */
 class TObjectIntHashMapSerializer extends Serializer[TObjectIntHashMap[Object]] {
 
 

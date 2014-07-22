@@ -20,9 +20,6 @@
 package org.apache.spark.mllib.clustering.topicmodeling.topicmodels.regulaizers
 
 /**
- * Created by valerij on 6/26/14.
- */
-/**
  * Defined symmetric Dirichlet prior
  * @param alpha - paarmeter of Dirichlet distribution
  */

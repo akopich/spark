@@ -21,9 +21,6 @@ package org.apache.spark.mllib.clustering.topicmodeling.topicmodels.regulaizers
 
 import cern.jet.stat.Gamma
 
-/**
- * Created by valerij on 6/26/14.
- */
 trait SymmetricDirichletHelper {
   protected val alpha: Float
 

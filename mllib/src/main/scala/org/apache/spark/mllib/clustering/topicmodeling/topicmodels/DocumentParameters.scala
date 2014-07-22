@@ -23,9 +23,6 @@ import org.apache.spark.mllib.clustering.topicmodeling.documents.Document
 import org.apache.spark.mllib.clustering.topicmodeling.topicmodels.regulaizers.DocumentOverTopicDistributionRegularizer
 
 /**
- * Created by valerij on 6/25/14.
- */
-/**
  * the class contains document parameter in PLSA model
  * @param document
  * @param theta the distribution over topics

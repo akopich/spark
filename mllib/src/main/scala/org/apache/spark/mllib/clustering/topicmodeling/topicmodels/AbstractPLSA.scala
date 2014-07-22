@@ -26,9 +26,6 @@ import org.apache.spark.mllib.clustering.topicmodeling.documents.Document
 import org.apache.spark.mllib.clustering.topicmodeling.topicmodels.regulaizers.{MatrixInPlaceModification, TopicsRegularizer}
 import org.apache.spark.rdd.RDD
 
-/**
- * Created by valerij on 6/25/14.
- */
 trait AbstractPLSA[DocumentParameterType <: DocumentParameters,
                   GlobalParameterType <: GlobalParameters,
                   GlobalCounterType <: GlobalCounters]

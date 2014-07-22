@@ -19,9 +19,6 @@
 package org.apache.spark.mllib.clustering.topicmodeling.topicmodels.regulaizers
 
 /**
- * Created by valerij on 6/26/14.
- */
-/**
  * Defines a prior distribution (possibly, improper) on \Phi matrix  (words over topics)
  */
 trait TopicsRegularizer extends MatrixInPlaceModification {

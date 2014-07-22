@@ -28,13 +28,6 @@ import org.apache.spark.{Logging, SparkContext}
 
 
 /**
- * Created with IntelliJ IDEA.
- * User: padre
- * Date: 27.08.13
- * Time: 16:40
- * To change this template use File | Settings | File Templates.
- */
-/**
  * distributed topic modeling via RobustPLSA (Hofmann (1999), Vorontsov, Potapenko (2014) )
  *
  * @param sc  spark context

@@ -23,12 +23,6 @@ import org.apache.spark.rdd.RDD
 
 
 /**
- * Created with IntelliJ IDEA.
- * User: valerij
- * Date: 2/13/13
- * Time: 5:56 PM
- */
-/**
  * topic modeling interface
  */
 trait TopicModel[DocumentParameterType <: DocumentParameters, 

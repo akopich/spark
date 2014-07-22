@@ -18,9 +18,6 @@
 package org.apache.spark.mllib.clustering.topicmodeling.topicmodels.regulaizers
 
 /**
- * Created by valerij on 6/26/14.
- */
-/**
  * usage of this prior is equivalent to use of no prior
  */
 class UniformTopicRegularizer extends TopicsRegularizer {

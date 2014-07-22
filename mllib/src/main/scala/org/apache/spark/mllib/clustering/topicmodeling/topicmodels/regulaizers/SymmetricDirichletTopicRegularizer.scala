@@ -21,9 +21,6 @@ package org.apache.spark.mllib.clustering.topicmodeling.topicmodels.regulaizers
 
 
 /**
- * Created by valerij on 6/26/14.
- */
-/**
  *
  * @param alpha - parmeter of Dirichlet distribution
  */

@@ -19,6 +19,8 @@
 package org.apache.spark.mllib.clustering.topicmodeling.topicmodels
 
 /**
+ * Holds global parameters of PLSA model -- \Phi matrix (topics over words distribution) and
+ * alphabet size
  *
  * @param phi -- distribution of topics over words
  * @param alphabetSize

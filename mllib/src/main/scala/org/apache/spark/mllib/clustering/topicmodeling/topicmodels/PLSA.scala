@@ -50,9 +50,9 @@ class PLSA(@transient protected val sc: SparkContext,
            @transient protected val topicRegularizer: TopicsRegularizer =
                   new UniformTopicRegularizer,
            private val computePpx: Boolean = true)
-            extends AbstractPLSA[DocumentParameters, GlobalParameters, GlobalCounters]
-            with Logging
-            with Serializable {
+  extends AbstractPLSA[DocumentParameters, GlobalParameters, GlobalCounters]
+  with Logging
+  with Serializable {
 
   override def infer(documents: RDD[Document]): (RDD[DocumentParameters], GlobalParameters) = {
     val alphabetSize = getAlphabetSize(documents)

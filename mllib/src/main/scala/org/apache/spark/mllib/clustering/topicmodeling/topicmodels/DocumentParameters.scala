@@ -29,7 +29,8 @@ import org.apache.spark.mllib.clustering.topicmodeling.topicmodels.regulaizers.D
  * @param theta the distribution over topics
  * @param regularizer
  */
-class DocumentParameters(val document: Document, val theta: Array[Float],
+class DocumentParameters(val document: Document,
+                         val theta: Array[Float],
                          private val regularizer: DocumentOverTopicDistributionRegularizer)
   extends Serializable {
   protected def getZ(topics: Broadcast[Array[Array[Float]]]) = {
@@ -98,7 +99,7 @@ class DocumentParameters(val document: Document, val theta: Array[Float],
 }
 
 
-object DocumentParameters extends SparseVectorFasterSum {
+private[topicmodels] object DocumentParameters extends SparseVectorFasterSum {
 
   def apply(document: Document, numberOfTopics: Int,
             regularizer: DocumentOverTopicDistributionRegularizer) = {

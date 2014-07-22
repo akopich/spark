@@ -43,7 +43,7 @@ class RobustGlobalCounters(wordsFromTopic: Array[Array[Float]],
   }
 
   /**
-   * calculates and add local parameters to global parameters
+   * adds a local parameter to global parameters
    * @param that DocumentParameters.
    * @param topics broadcasted words by topics distribution
    * @param background words by background distribution
@@ -79,7 +79,7 @@ class RobustGlobalCounters(wordsFromTopic: Array[Array[Float]],
 /**
  * companion object of class GlobalParameters
  */
-object RobustGlobalCounters {
+private[topicmodels] object RobustGlobalCounters {
   /**
    * construct new GlobalParameters
    * @param topicNum number of topics

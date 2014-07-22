@@ -21,6 +21,10 @@ import com.esotericsoftware.kryo.io.{Input, Output}
 import com.esotericsoftware.kryo.{Kryo, Serializer}
 import gnu.trove.map.hash.TObjectIntHashMap
 
+/**
+ * this is a serializer for TObjectIntHashMapSerializer, should be passed to register(...) kryo
+ * method
+ */
 class TObjectIntHashMapSerializer extends Serializer[TObjectIntHashMap[Object]] {
 
 

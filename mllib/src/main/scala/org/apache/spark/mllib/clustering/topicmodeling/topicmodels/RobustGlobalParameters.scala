@@ -18,6 +18,14 @@
 
 package org.apache.spark.mllib.clustering.topicmodeling.topicmodels
 
+/**
+ * Holds global parameters of PLSA model -- \Phi matrix (topics over words distribution) and
+ * distribution of words in background
+ *
+ * @param phi -- distribution of topics over words
+ * @param alphabetSize
+ * @param background
+ */
 class RobustGlobalParameters(phi : Array[Array[Float]],
                              alphabetSize: Int,
                              val background : Array[Float] )

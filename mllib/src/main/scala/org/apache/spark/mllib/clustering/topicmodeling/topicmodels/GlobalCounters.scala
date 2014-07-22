@@ -21,7 +21,9 @@ import org.apache.spark.broadcast.Broadcast
 
 
 /**
- * holds \Phi matrix
+ * contains global counters in PLSA model -- holds n_{tw} (Vorontov's notation) counters and
+ * alphabet size
+ *
  * @param wordsFromTopics
  * @param alphabetSize
  */
@@ -61,7 +63,7 @@ class GlobalCounters(val wordsFromTopics: Array[Array[Float]], val alphabetSize:
   }
 }
 
-object GlobalCounters {
+private[topicmodels] object GlobalCounters {
   def apply(topicNum: Int, alphabetSize: Int) = {
     val topicWords = (0 until topicNum).map(i => new Array[Float](alphabetSize)).toArray
     new GlobalCounters(topicWords, alphabetSize)

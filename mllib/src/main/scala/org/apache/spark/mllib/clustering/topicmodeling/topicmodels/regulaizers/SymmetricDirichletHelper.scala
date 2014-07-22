@@ -21,7 +21,7 @@ package org.apache.spark.mllib.clustering.topicmodeling.topicmodels.regulaizers
 
 import cern.jet.stat.Gamma
 
-trait SymmetricDirichletHelper {
+private[regulaizers] trait SymmetricDirichletHelper {
   protected val alpha: Float
 
   private def logBeta(x: Array[Float]) = {
@@ -35,6 +35,6 @@ trait SymmetricDirichletHelper {
    */
   private val SMALL_VALUE: Double = 0.00001
 
-  protected def dirichletLogLikelihood(x: Array[Float]) = (-logBeta(x) + (alpha - 1) * x.map(xx
-  => math.log(xx + SMALL_VALUE)).sum).toFloat
+  protected def dirichletLogLikelihood(x: Array[Float]) = (-logBeta(x) +
+    (alpha - 1) * x.map(xx => math.log(xx + SMALL_VALUE)).sum).toFloat
 }

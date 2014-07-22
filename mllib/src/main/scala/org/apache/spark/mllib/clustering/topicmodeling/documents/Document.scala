@@ -21,6 +21,9 @@ import breeze.linalg.SparseVector
 
 
 /**
+ * This class represents a document in a vector space. Every word in the document is replaced
+ * with a serial number.
+ *
  * @param tokens Non-zero components correspond to words included in the document.
  *               Non-zero value equals to the number of time the words is included in the document.
  * @param alphabetSize number of different words in the collections

@@ -19,7 +19,7 @@ package org.apache.spark.mllib.clustering.topicmodeling.topicmodels
 
 import breeze.linalg.SparseVector
 
-trait SparseVectorFasterSum {
+private[topicmodels] trait SparseVectorFasterSum {
   protected def sum[T](vector: SparseVector[Int]) = {
     var sum = 0
     for (element <- vector) sum += element

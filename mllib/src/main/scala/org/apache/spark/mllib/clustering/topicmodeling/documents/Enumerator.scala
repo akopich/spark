@@ -18,7 +18,6 @@
 package org.apache.spark.mllib.clustering.topicmodeling.documents
 
 import breeze.linalg.SparseVector
-import breeze.util.HashIndex
 import breeze.util.Index
 import org.apache.spark.SparkContext.rddToPairRDDFunctions
 import org.apache.spark.rdd.RDD

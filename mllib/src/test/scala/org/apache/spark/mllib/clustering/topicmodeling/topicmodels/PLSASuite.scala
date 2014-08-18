@@ -29,7 +29,7 @@ class PLSASuite extends AbstractTopicModelSuite[DocumentParameters, GlobalParame
     val plsa = new PLSA(sc,
       numberOfTopics,
       numberOfIterations,
-      new Random(),
+      new Random(13),
       new SymmetricDirichletDocumentOverTopicDistributionRegularizer(0.2f),
       new SymmetricDirichletTopicRegularizer(0.2f))
 

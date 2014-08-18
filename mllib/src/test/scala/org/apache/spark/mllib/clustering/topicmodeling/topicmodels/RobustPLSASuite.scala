@@ -30,7 +30,7 @@ class RobustPLSASuite extends AbstractTopicModelSuite[RobustDocumentParameters,
     val plsa = new RobustPLSA(sc,
       numberOfTopics,
       numberOfIterations,
-      new Random(),
+      new Random(13),
       new SymmetricDirichletDocumentOverTopicDistributionRegularizer(0.2f),
       new SymmetricDirichletTopicRegularizer(0.2f))
 

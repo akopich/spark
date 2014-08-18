@@ -18,7 +18,8 @@
 package org.apache.spark.mllib.clustering.topicmodeling.documents
 
 import breeze.linalg.SparseVector
-import gnu.trove.map.hash.TObjectIntHashMap
+import breeze.util.HashIndex
+import breeze.util.Index
 import org.apache.spark.SparkContext.rddToPairRDDFunctions
 import org.apache.spark.rdd.RDD
 
@@ -44,23 +45,28 @@ object Enumerator {
   }
 
 
-  private def mkDocument(rawDocument: Seq[String], alphabet: TObjectIntHashMap[String]) = {
-    val wordsMap = rawDocument.map(alphabet.get).foldLeft(Map[Int, Int]().withDefaultValue(0))(
-      (map, word) => map + (word -> (1 + map(word))))
+  private def mkDocument(rawDocument: Seq[String], alphabet: Index[String]) = {
+    val wordsMap = rawDocument.map(alphabet.apply)
+      .filter(_ != -1)
+      .foldLeft(Map[Int, Int]().withDefaultValue(0))((map, word) => map + (word -> (1 + map(word))))
 
     val words = wordsMap.keys.toArray.sorted
 
-    val tokens = new SparseVector[Int](words, words.map(word => wordsMap(word)), alphabet.size())
-    new Document(tokens, alphabet.size())
+    val tokens = new SparseVector[Int](words, words.map(word => wordsMap(word)), alphabet.size)
+    new Document(tokens, alphabet.size)
   }
 
   private def getAlphabet(rawDocuments: RDD[Seq[String]], rareTokenThreshold: Int) = {
-    val alphabet = new TObjectIntHashMap[String]()
+    val alphabet = new HashIndex[String]
 
-    rawDocuments.flatMap(x => x).map(x => (x, 1)).reduceByKey(_ + _).filter(_._2 >
-      rareTokenThreshold).collect.map(_._1).zipWithIndex.foreach { case (key,
-    value) => alphabet.put(key, value)
-    }
+    rawDocuments.flatMap(x => x)
+      .map(x => (x, 1))
+      .reduceByKey(_ + _)
+      .filter(_._2 > rareTokenThreshold)
+      .collect
+      .map(_._1).foreach ( token => alphabet.index(token) )
+
+
     alphabet
   }
 }

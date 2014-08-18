@@ -57,16 +57,11 @@ object Enumerator {
   }
 
   private def getAlphabet(rawDocuments: RDD[Seq[String]], rareTokenThreshold: Int) = {
-    val alphabet = new HashIndex[String]
-
-    rawDocuments.flatMap(x => x)
+    Index(rawDocuments.flatMap(x => x)
       .map(x => (x, 1))
       .reduceByKey(_ + _)
       .filter(_._2 > rareTokenThreshold)
       .collect
-      .map(_._1).foreach ( token => alphabet.index(token) )
-
-
-    alphabet
+      .map(_._1))
   }
 }

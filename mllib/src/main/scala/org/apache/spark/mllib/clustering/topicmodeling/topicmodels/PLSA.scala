@@ -54,18 +54,46 @@ class PLSA(@transient protected val sc: SparkContext,
   with Logging
   with Serializable {
 
+
+  /**
+   *
+   * @param documents  -- document collection
+   * @return a pair of rdd of document parameters global parameters
+   */
   override def infer(documents: RDD[Document]): (RDD[DocumentParameters], GlobalParameters) = {
+    val alphabetSize = getAlphabetSize(documents)
+    EM(documents, getInitialTopics(alphabetSize), alphabetSize, foldingIn = false)
+  }
+
+  /**
+   *
+   * @param documents  docs to be folded in
+   * @param globalParams global parameters that were produced by infer method (stores topics)
+   * @return
+   */
+  override def foldIn(documents: RDD[Document],
+                      globalParams: GlobalParameters): RDD[DocumentParameters] = {
+    EM(documents, sc.broadcast(globalParams.phi), globalParams.alphabetSize, foldingIn = true)._1
+  }
+
+  private def EM(documents: RDD[Document],
+                 topicBC: Broadcast[Array[Array[Float]]],
+                 alphabetSize : Int,
+                 foldingIn : Boolean): (RDD[DocumentParameters], GlobalParameters) = {
     val alphabetSize = getAlphabetSize(documents)
 
     val collectionLength = getCollectionLength(documents)
-
-    val topicBC = getInitialTopics(alphabetSize)
 
     val parameters = documents.map(doc => DocumentParameters(doc,
                                                     numberOfTopics,
                                                     documentOverTopicDistributionRegularizer))
 
-    val (result, topics) = newIteration(parameters, topicBC, alphabetSize, collectionLength, 0)
+    val (result, topics) = newIteration(parameters,
+        topicBC,
+        alphabetSize,
+        collectionLength,
+        0,
+        foldingIn)
 
     (result, new GlobalParameters(topics.value,alphabetSize))
   }
@@ -75,7 +103,8 @@ class PLSA(@transient protected val sc: SparkContext,
        topicsBC: Broadcast[Array[Array[Float]]],
        alphabetSize: Int,
        collectionLength: Int,
-       numberOfIteration: Int): (RDD[DocumentParameters], Broadcast[Array[Array[Float]]]) = {
+       numberOfIteration: Int,
+       foldingIn : Boolean): (RDD[DocumentParameters], Broadcast[Array[Array[Float]]]) = {
     if (computePpx) {
       logInfo("Interation number " + numberOfIteration)
       logInfo("Perplexity=" + perplexity(topicsBC, parameters, collectionLength))
@@ -85,15 +114,20 @@ class PLSA(@transient protected val sc: SparkContext,
     } else {
       val newParameters = parameters.map(param => param.getNewTheta(topicsBC)).cache()
       val globalCounters = getGlobalCounters(parameters, topicsBC, alphabetSize)
-      val newTopics = getTopics(newParameters, alphabetSize, topicsBC.value, globalCounters)
+      val newTopics = getTopics(newParameters,
+          alphabetSize,
+          topicsBC,
+          globalCounters,
+          foldingIn)
 
       parameters.unpersist()
 
       newIteration(newParameters,
-        sc.broadcast(newTopics),
+        newTopics,
         alphabetSize,
         collectionLength,
-        numberOfIteration + 1)
+        numberOfIteration + 1,
+        foldingIn)
     }
   }
 

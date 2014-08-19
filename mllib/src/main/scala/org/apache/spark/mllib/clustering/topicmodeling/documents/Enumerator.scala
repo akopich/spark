@@ -20,6 +20,7 @@ package org.apache.spark.mllib.clustering.topicmodeling.documents
 import breeze.linalg.SparseVector
 import breeze.util.Index
 import org.apache.spark.SparkContext.rddToPairRDDFunctions
+import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.rdd.RDD
 
 
@@ -35,13 +36,25 @@ object Enumerator {
    *                     (Strings) )
    * @param rareTokenThreshold tokens that are encountered in the collection less than
    *                           rareTokenThreshold times are omitted
-   * @return RDD of documents with tokens replaced with their order numbers
+   * @return a pair of RDD of documents with tokens replaced with their order numbers and a
+   *         broadcasted alphabet
    */
-  def numerate(rawDocuments: RDD[Seq[String]], rareTokenThreshold: Int) = {
+  def numerate(rawDocuments: RDD[Seq[String]],
+               rareTokenThreshold: Int) : (RDD[Document], Broadcast[Index[String]]) = {
     val alphabet = rawDocuments.context.broadcast(getAlphabet(rawDocuments, rareTokenThreshold))
 
-    rawDocuments.map(document => mkDocument(document, alphabet.value))
+    (rawDocuments.map(document => mkDocument(document, alphabet.value)), alphabet)
   }
+
+  /**
+   *
+   * @param rawDocuments  RDD of tokenized documents (every document is a sequence of tokens
+   *                     (Strings) )
+   * @param alphabetBC  Broadcasted alphabet (the one that is produced by another numerate method)
+   * @return RDD of documents with tokens replaced with their order numbers
+   */
+  def numerate(rawDocuments: RDD[Seq[String]], alphabetBC : Broadcast[Index[String]] ) =
+    rawDocuments.map(doc => mkDocument(doc, alphabetBC.value))
 
 
   private def mkDocument(rawDocument: Seq[String], alphabet: Index[String]) = {

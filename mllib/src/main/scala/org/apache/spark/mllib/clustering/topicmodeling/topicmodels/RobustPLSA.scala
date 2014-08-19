@@ -53,19 +53,40 @@ class RobustPLSA(@transient protected val sc: SparkContext,
                  private val computePpx: Boolean = true,
                  private val gamma: Float = 0.3f,
                  private val eps: Float = 0.01f)
-                                extends AbstractPLSA[RobustDocumentParameters,
-                                                      RobustGlobalParameters,
-                                                      RobustGlobalCounters]
-                                with Logging
-                                with Serializable {
+  extends AbstractPLSA[RobustDocumentParameters, RobustGlobalParameters, RobustGlobalCounters]
+  with Logging
+  with Serializable {
 
 
+  /**
+   *
+   * @param documents  -- document collection
+   * @return a pair of rdd of document parameters global parameters
+   */
   override def infer(documents: RDD[Document])
-      :(RDD[RobustDocumentParameters], RobustGlobalParameters) = {
+      : (RDD[RobustDocumentParameters], RobustGlobalParameters) = {
     val alphabetSize = getAlphabetSize(documents)
+    EM(documents, getInitialTopics(alphabetSize), alphabetSize, foldingIn = false)
+  }
+
+
+  /**
+   *
+   * @param documents  docs to be folded in
+   * @param globalParams global parameters that were produced by infer method (stores topics)
+   * @return
+   */
+  override def foldIn(documents: RDD[Document],
+                      globalParams: RobustGlobalParameters): RDD[RobustDocumentParameters] = {
+    EM(documents, sc.broadcast(globalParams.phi), globalParams.alphabetSize, foldingIn = true)._1
+  }
+
+  private def EM(documents: RDD[Document],
+                 topicBC: Broadcast[Array[Array[Float]]],
+                 alphabetSize : Int,
+                 foldingIn : Boolean) :(RDD[RobustDocumentParameters], RobustGlobalParameters) = {
     val collectionLength = getCollectionLength(documents)
 
-    val topicBC = getInitialTopics(alphabetSize)
     val parameters = documents.map(doc => RobustDocumentParameters(doc,
                                                   numberOfTopics,
                                                   gamma,
@@ -79,7 +100,8 @@ class RobustPLSA(@transient protected val sc: SparkContext,
                                           background,
                                           alphabetSize,
                                           collectionLength,
-                                          0)
+                                          0,
+                                          foldingIn)
 
     (result, new RobustGlobalParameters(topics.value, alphabetSize, background))
   }
@@ -90,7 +112,8 @@ class RobustPLSA(@transient protected val sc: SparkContext,
                            background: Array[Float],
                            alphabetSize: Int,
                            collectionLength: Int,
-                           numberOfIteration: Int):
+                           numberOfIteration: Int,
+                           foldingIn : Boolean):
                   (RDD[RobustDocumentParameters], Broadcast[Array[Array[Float]]], Array[Float]) = {
 
     if (computePpx) {
@@ -103,17 +126,23 @@ class RobustPLSA(@transient protected val sc: SparkContext,
       val newParameters = parameters.map(parameter =>
         parameter.getNewTheta(topicsBC, background, eps, gamma)).cache()
       val globalCounters = getGlobalCounters(parameters, topicsBC, background, alphabetSize)
-      val newTopics = getTopics(newParameters, alphabetSize, topicsBC.value, globalCounters)
+      val newTopics = getTopics(newParameters,
+          alphabetSize,
+          topicsBC,
+          globalCounters,
+          foldingIn)
+
       val newBackground = getNewBackgound(globalCounters)
 
       parameters.unpersist()
 
       newIteration(newParameters,
-        sc.broadcast(newTopics),
+        newTopics,
         newBackground,
         alphabetSize,
         collectionLength,
-        numberOfIteration + 1)
+        numberOfIteration + 1,
+        foldingIn)
     }
   }
 

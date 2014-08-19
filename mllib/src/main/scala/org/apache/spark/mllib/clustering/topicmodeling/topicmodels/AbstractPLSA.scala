@@ -75,15 +75,18 @@ private[topicmodels] trait AbstractPLSA[DocumentParameterType <: DocumentParamet
 
   protected def getTopics(parameters: RDD[DocumentParameterType],
       alphabetSize: Int,
-      oldTopics: Array[Array[Float]],
-      globalCounters: GlobalCounterType) = {
+      oldTopics: Broadcast[Array[Array[Float]]],
+      globalCounters: GlobalCounterType,
+      foldingIn : Boolean) = {
+    if (foldingIn) oldTopics
+    else {
+      val newTopicCnt: Array[Array[Float]] = globalCounters.wordsFromTopics
 
-    val newTopicCnt: Array[Array[Float]] = globalCounters.wordsFromTopics
+      topicRegularizer.regularize(newTopicCnt, oldTopics.value)
+      normalize(newTopicCnt)
 
-    topicRegularizer.regularize(newTopicCnt, oldTopics)
-    normalize(newTopicCnt)
-
-    newTopicCnt
+      sc.broadcast(newTopicCnt)
+    }
   }
 
   private def normalize(matrix: Array[Array[Float]]) = {

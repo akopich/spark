@@ -32,7 +32,7 @@ trait AbstractTopicModelSuite[DocumentParameterType <: DocumentParameters,
     val rawDocuments = sc.parallelize(Seq("a b a", "x y y z", "a b z x ").map(_.split(" ").toSeq))
 
     // use enumerator to map documents in vector space
-    val docs = Enumerator.numerate(rawDocuments, 0)
+    val (docs, alphabet ) = Enumerator.numerate(rawDocuments, 0)
 
     // training plsa
     val (docParameters, global) = plsa.infer(docs)
@@ -49,8 +49,25 @@ trait AbstractTopicModelSuite[DocumentParameterType <: DocumentParameters,
     for (documentParameter <- docParameters.collect)
       assert(doesSumEqualToOne(documentParameter.theta), "theta is not normalized")
 
-    assert(docParameters.collect.forall(_.theta.forall(_ >= 0f)), "theta is not non-non-negative")
+    assert(docParameters.collect.forall(_.theta.forall(_ >= 0f)), "theta is not non-negative")
 
+    // let's suppose there are some more documents
+    val foldInRawDocs = sc.parallelize(Seq("a b b", "x y x x z", "a b b b z c  x ")
+      .map(_.split(" ").toSeq))
+
+    // numerate them with the same alphabet
+    val foldInDocs = Enumerator.numerate(foldInRawDocs, alphabet)
+
+    // now fold in these documents
+    val foldedInDocParameters = plsa.foldIn(foldInDocs, global)
+
+    // the same requirements of non-negativeness and normalization apply
+    assert(foldedInDocParameters.collect.forall(_.theta.forall(_ >= 0f)),
+      "theta for folded in docs is not non-negative")
+
+    for (documentParameter <- docParameters.collect)
+      assert(doesSumEqualToOne(documentParameter.theta),
+        "theta for folded in docs  is not normalized")
   }
 
   private def doesSumEqualToOne(arr: Array[Float]) = math.abs(arr.sum - 1) < EPS

@@ -93,17 +93,17 @@ class RobustPLSA(@transient protected val sc: SparkContext,
                                                   eps,
                                                   documentOverTopicDistributionRegularizer))
 
-    val background = Array.fill(alphabetSize)(1f / alphabetSize)
+    val initBackground = Array.fill(alphabetSize)(1f / alphabetSize)
 
-    val (result, topics, backgound) = newIteration(parameters,
+    val (result, topics, newBackground) = newIteration(parameters,
                                           topicBC,
-                                          background,
+                                          initBackground,
                                           alphabetSize,
                                           collectionLength,
                                           0,
                                           foldingIn)
 
-    (result, new RobustGlobalParameters(topics.value, alphabetSize, background))
+    (result, new RobustGlobalParameters(topics.value, alphabetSize, newBackground))
   }
 
 
@@ -132,7 +132,7 @@ class RobustPLSA(@transient protected val sc: SparkContext,
           globalCounters,
           foldingIn)
 
-      val newBackground = getNewBackgound(globalCounters)
+      val newBackground = getNewBackground(globalCounters)
 
       parameters.unpersist()
 
@@ -155,7 +155,7 @@ class RobustPLSA(@transient protected val sc: SparkContext,
         (thatOne, otherOne) => thatOne + otherOne)
   }
 
-  private def getNewBackgound(globalCounters: RobustGlobalCounters) = {
+  private def getNewBackground(globalCounters: RobustGlobalCounters) = {
     val sum = globalCounters.backgroundWords.sum
     if (sum > 0 && gamma != 0) {
       globalCounters.backgroundWords.map(i => i / sum)

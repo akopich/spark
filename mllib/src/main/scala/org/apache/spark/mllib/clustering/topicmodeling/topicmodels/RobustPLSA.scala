@@ -165,7 +165,7 @@ class RobustPLSA(@transient protected val sc: SparkContext,
     if (sum > 0 && gamma != 0) {
       globalCounters.backgroundWords.map(i => i / sum)
     } else {
-      globalCounters.backgroundWords.map(i => 0f)
+      Array.fill[Float](globalCounters.alphabetSize)(0f)
     }
   }
 

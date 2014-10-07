@@ -27,9 +27,6 @@ import org.apache.spark.{Logging, SparkContext}
 
 
 /**
- * Created by valerij on 6/25/14.
- */
-/**
  *
  * distributed topic modeling via PLSA (Hofmann (1999), Vorontsov, Potapenko (2014) )
  * @param sc  spark context
@@ -97,7 +94,6 @@ class PLSA(@transient protected val sc: SparkContext,
 
     (result, new GlobalParameters(topics.value,alphabetSize))
   }
-
 
   private def newIteration(parameters: RDD[DocumentParameters],
        topicsBC: Broadcast[Array[Array[Float]]],

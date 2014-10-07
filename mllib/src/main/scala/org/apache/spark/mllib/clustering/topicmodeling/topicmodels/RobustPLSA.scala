@@ -38,7 +38,7 @@ import org.apache.spark.{Logging, SparkContext}
  * @param topicRegularizer
  * @param computePpx boolean. If true, model computes perplexity and prints it puts in the log at
  *                   INFO level. it takes some time and memory
- * @param gamma weight of background
+ * @param gamma weight of backgroundBC
  * @param eps   weight of noise
  */
 class RobustPLSA(@transient protected val sc: SparkContext,
@@ -93,7 +93,7 @@ class RobustPLSA(@transient protected val sc: SparkContext,
                                                   eps,
                                                   documentOverTopicDistributionRegularizer))
 
-    val initBackground = Array.fill(alphabetSize)(1f / alphabetSize)
+    val initBackground = sc.broadcast(Array.fill(alphabetSize)(1f / alphabetSize))
 
     val (result, topics, newBackground) = newIteration(parameters,
                                           topicBC,
@@ -103,36 +103,38 @@ class RobustPLSA(@transient protected val sc: SparkContext,
                                           0,
                                           foldingIn)
 
-    (result, new RobustGlobalParameters(topics.value, alphabetSize, newBackground))
+    (result, new RobustGlobalParameters(topics.value, alphabetSize, newBackground.value))
   }
 
 
   private def newIteration(parameters: RDD[RobustDocumentParameters],
                            topicsBC: Broadcast[Array[Array[Float]]],
-                           background: Array[Float],
+                           backgroundBC: Broadcast[Array[Float]],
                            alphabetSize: Int,
                            collectionLength: Int,
                            numberOfIteration: Int,
                            foldingIn : Boolean):
-                  (RDD[RobustDocumentParameters], Broadcast[Array[Array[Float]]], Array[Float]) = {
+                  (RDD[RobustDocumentParameters],
+                    Broadcast[Array[Array[Float]]],
+                    Broadcast[Array[Float]]) = {
 
     if (computePpx) {
-      logInfo("Interation number " + numberOfIteration)
-      logInfo("Perplexity=" + perplexity(topicsBC, parameters, background, collectionLength))
+      logInfo("Iteration number " + numberOfIteration)
+      logInfo("Perplexity=" + perplexity(topicsBC, parameters, backgroundBC, collectionLength))
     }
     if (numberOfIteration == numberOfIterations) {
-      (parameters, topicsBC, background)
+      (parameters, topicsBC, backgroundBC)
     } else {
       val newParameters = parameters.map(parameter =>
-        parameter.getNewTheta(topicsBC, background, eps, gamma)).cache()
-      val globalCounters = getGlobalCounters(parameters, topicsBC, background, alphabetSize)
+        parameter.getNewTheta(topicsBC, backgroundBC, eps, gamma)).cache()
+      val globalCounters = getGlobalCounters(parameters, topicsBC, backgroundBC, alphabetSize)
       val newTopics = getTopics(newParameters,
           alphabetSize,
           topicsBC,
           globalCounters,
           foldingIn)
 
-      val newBackground = getNewBackground(globalCounters)
+      val newBackground = sc.broadcast(getNewBackground(globalCounters))
 
       parameters.unpersist()
 
@@ -148,10 +150,11 @@ class RobustPLSA(@transient protected val sc: SparkContext,
 
   private def getGlobalCounters(parameters: RDD[RobustDocumentParameters],
                                   topics: Broadcast[Array[Array[Float]]],
-                                  background: Array[Float], alphabetSize: Int) = {
+                                  backgroundBC: Broadcast[Array[Float]],
+                                  alphabetSize: Int) = {
     parameters.aggregate[RobustGlobalCounters](RobustGlobalCounters(numberOfTopics,
       alphabetSize))(
-        (thatOne, otherOne) => thatOne.add(otherOne, topics, background, eps, gamma,alphabetSize),
+        (thatOne, otherOne) => thatOne.add(otherOne, topics, backgroundBC, eps, gamma,alphabetSize),
         (thatOne, otherOne) => thatOne + otherOne)
   }
 
@@ -166,14 +169,15 @@ class RobustPLSA(@transient protected val sc: SparkContext,
 
 
   private def perplexity(topicsBC: Broadcast[Array[Array[Float]]],
-                         parameters: RDD[RobustDocumentParameters], background: Array[Float],
+                         parameters: RDD[RobustDocumentParameters],
+                         backgroundBC: Broadcast[Array[Float]],
                          collectionLength: Int) =
     generalizedPerplexity(topicsBC,
       parameters,
       collectionLength,
       par => (word,num) =>
         num * math.log(probabilityOfWordGivenTopic(word, par, topicsBC) +
-          gamma * background(word) +
+          gamma * backgroundBC.value(word) +
           eps * par.noise(word) / (1 + eps + gamma)).toFloat)
 
 }

@@ -38,31 +38,35 @@ class RobustDocumentParameters(document: Document,
   extends DocumentParameters(document, theta, regularizer) {
 
   protected def getZ(topics: Broadcast[Array[Array[Float]]],
-                     background: Array[Float],
+                     background: Broadcast[Array[Float]],
                      eps: Float,
                      gamma: Float) = {
     val topicsValue = topics.value
+    val backgroundValue = background.value
     val numberOfTopics = topicsValue.size
 
     val Z = document.tokens.mapActivePairs { case (word, n) =>
       val sum = (0 until numberOfTopics).foldLeft(0f)((sum, topic) =>
         sum + topicsValue(topic)(word) * theta(topic))
-      (eps * noise(word) + gamma * background(word) + sum) / (1 + eps + gamma)
+      (eps * noise(word) + gamma * backgroundValue(word) + sum) / (1 + eps + gamma)
     }
     Z
   }
 
   private[topicmodels] def wordsFromTopicsAndWordsFromBackground(
       topics: Broadcast[Array[Array[Float]]],
-      background: Array[Float], eps: Float,
+      background: Broadcast[Array[Float]],
+      eps: Float,
       gamma: Float): (Array[SparseVector[Float]], SparseVector[Float]) = {
     val Z = getZ(topics, background, eps, gamma)
 
-    (super.wordsToTopicCnt(topics, Z), wordToBackgroundCnt(background, eps, gamma, Z))
+    (super.wordsToTopicCnt(topics, Z), wordToBackgroundCnt(background.value, eps, gamma, Z))
   }
 
 
-  protected def wordToBackgroundCnt(background: Array[Float], eps: Float, gamma: Float,
+  protected def wordToBackgroundCnt(background: Array[Float],
+      eps: Float,
+      gamma: Float,
       Z: SparseVector[Float]): SparseVector[Float] = {
     document.tokens.mapActivePairs { case (word, num) =>
       num * background(word) * gamma / Z(word)
@@ -88,7 +92,7 @@ class RobustDocumentParameters(document: Document,
    * calculates a new distribution of this document by topic, corresponding to the new topics
    */
   def getNewTheta(topicsBC: Broadcast[Array[Array[Float]]],
-      background: Array[Float],
+      background: Broadcast[Array[Float]],
       eps: Float,
       gamma: Float) = {
     val Z = getZ(topicsBC, background, eps, gamma)

@@ -106,7 +106,7 @@ class PLSA(@transient protected val sc: SparkContext,
        numberOfIteration: Int,
        foldingIn : Boolean): (RDD[DocumentParameters], Broadcast[Array[Array[Float]]]) = {
     if (computePpx) {
-      logInfo("Interation number " + numberOfIteration)
+      logInfo("Iteration number " + numberOfIteration)
       logInfo("Perplexity=" + perplexity(topicsBC, parameters, collectionLength))
     }
     if (numberOfIteration == numberOfIterations) {

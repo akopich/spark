@@ -58,7 +58,8 @@ private[topicmodels] trait AbstractPLSA[DocumentParameterType <: DocumentParamet
       parameter.priorThetaLogProbability
   }
 
-  protected def probabilityOfWordGivenTopic(word: Int, parameter: DocumentParameters,
+  protected def probabilityOfWordGivenTopic(word: Int,
+      parameter: DocumentParameters,
       topicsBC: Broadcast[Array[Array[Float]]]) = {
     var underLog = 0f
     for (topic <- 0 until numberOfTopics) {

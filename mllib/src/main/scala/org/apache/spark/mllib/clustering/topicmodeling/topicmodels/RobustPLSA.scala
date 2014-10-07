@@ -154,8 +154,10 @@ class RobustPLSA(@transient protected val sc: SparkContext,
                                   alphabetSize: Int) = {
     parameters.aggregate[RobustGlobalCounters](RobustGlobalCounters(numberOfTopics,
       alphabetSize))(
-        (thatOne, otherOne) => thatOne.add(otherOne, topics.value, background.value, eps, gamma,alphabetSize),
-        (thatOne, otherOne) => thatOne + otherOne)
+        (thatOne, otherOne) =>
+          thatOne.add(otherOne, topics.value, background.value, eps, gamma,alphabetSize),
+        (thatOne, otherOne) =>
+          thatOne + otherOne)
   }
 
   private def getNewBackground(globalCounters: RobustGlobalCounters) = {

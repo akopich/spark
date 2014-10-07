@@ -38,7 +38,7 @@ import org.apache.spark.{Logging, SparkContext}
  * @param topicRegularizer
  * @param computePpx boolean. If true, model computes perplexity and prints it puts in the log at
  *                   INFO level. it takes some time and memory
- * @param gamma weight of backgroundBC
+ * @param gamma weight of background
  * @param eps   weight of noise
  */
 class RobustPLSA(@transient protected val sc: SparkContext,
@@ -126,7 +126,7 @@ class RobustPLSA(@transient protected val sc: SparkContext,
       (parameters, topicsBC, backgroundBC)
     } else {
       val newParameters = parameters.map(parameter =>
-        parameter.getNewTheta(topicsBC, backgroundBC, eps, gamma)).cache()
+        parameter.getNewTheta(topicsBC.value, backgroundBC.value, eps, gamma)).cache()
       val globalCounters = getGlobalCounters(parameters, topicsBC, backgroundBC, alphabetSize)
       val newTopics = getTopics(newParameters,
           alphabetSize,
@@ -150,11 +150,11 @@ class RobustPLSA(@transient protected val sc: SparkContext,
 
   private def getGlobalCounters(parameters: RDD[RobustDocumentParameters],
                                   topics: Broadcast[Array[Array[Float]]],
-                                  backgroundBC: Broadcast[Array[Float]],
+                                  background: Broadcast[Array[Float]],
                                   alphabetSize: Int) = {
     parameters.aggregate[RobustGlobalCounters](RobustGlobalCounters(numberOfTopics,
       alphabetSize))(
-        (thatOne, otherOne) => thatOne.add(otherOne, topics, backgroundBC, eps, gamma,alphabetSize),
+        (thatOne, otherOne) => thatOne.add(otherOne, topics.value, background.value, eps, gamma,alphabetSize),
         (thatOne, otherOne) => thatOne + otherOne)
   }
 

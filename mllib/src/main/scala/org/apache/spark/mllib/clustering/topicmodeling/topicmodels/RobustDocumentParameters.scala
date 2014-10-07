@@ -19,7 +19,6 @@ package org.apache.spark.mllib.clustering.topicmodeling.topicmodels
 
 import breeze.linalg.{SparseVector, sum}
 
-import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.mllib.clustering.topicmodeling.documents.Document
 import org.apache.spark.mllib.clustering.topicmodeling.topicmodels.regulaizers.DocumentOverTopicDistributionRegularizer
 
@@ -37,30 +36,28 @@ class RobustDocumentParameters(document: Document,
                                regularizer: DocumentOverTopicDistributionRegularizer)
   extends DocumentParameters(document, theta, regularizer) {
 
-  protected def getZ(topics: Broadcast[Array[Array[Float]]],
-                     background: Broadcast[Array[Float]],
+  protected def getZ(topics: Array[Array[Float]],
+                     background: Array[Float],
                      eps: Float,
                      gamma: Float) = {
-    val topicsValue = topics.value
-    val backgroundValue = background.value
-    val numberOfTopics = topicsValue.size
+    val numberOfTopics = topics.size
 
     val Z = document.tokens.mapActivePairs { case (word, n) =>
       val sum = (0 until numberOfTopics).foldLeft(0f)((sum, topic) =>
-        sum + topicsValue(topic)(word) * theta(topic))
-      (eps * noise(word) + gamma * backgroundValue(word) + sum) / (1 + eps + gamma)
+        sum + topics(topic)(word) * theta(topic))
+      (eps * noise(word) + gamma * background(word) + sum) / (1 + eps + gamma)
     }
     Z
   }
 
   private[topicmodels] def wordsFromTopicsAndWordsFromBackground(
-      topics: Broadcast[Array[Array[Float]]],
-      background: Broadcast[Array[Float]],
+      topics: Array[Array[Float]],
+      background: Array[Float],
       eps: Float,
       gamma: Float): (Array[SparseVector[Float]], SparseVector[Float]) = {
     val Z = getZ(topics, background, eps, gamma)
 
-    (super.wordsToTopicCnt(topics, Z), wordToBackgroundCnt(background.value, eps, gamma, Z))
+    (wordsToTopicCnt(topics, Z), wordToBackgroundCnt(background, eps, gamma, Z))
   }
 
 
@@ -91,13 +88,13 @@ class RobustDocumentParameters(document: Document,
   /**
    * calculates a new distribution of this document by topic, corresponding to the new topics
    */
-  def getNewTheta(topicsBC: Broadcast[Array[Array[Float]]],
-      background: Broadcast[Array[Float]],
+  def getNewTheta(topics: Array[Array[Float]],
+      background: Array[Float],
       eps: Float,
       gamma: Float) = {
-    val Z = getZ(topicsBC, background, eps, gamma)
+    val Z = getZ(topics, background, eps, gamma)
 
-    super.assignNewTheta(topicsBC, Z)
+    assignNewTheta(topics, Z)
 
     val newNoise: SparseVector[Float] = getNoise(eps, Z)
     new RobustDocumentParameters(document, theta, newNoise, regularizer)

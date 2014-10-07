@@ -112,7 +112,7 @@ class PLSA(@transient protected val sc: SparkContext,
     if (numberOfIteration == numberOfIterations) {
       (parameters, topicsBC)
     } else {
-      val newParameters = parameters.map(param => param.getNewTheta(topicsBC)).cache()
+      val newParameters = parameters.map(param => param.getNewTheta(topicsBC.value)).cache()
       val globalCounters = getGlobalCounters(parameters, topicsBC, alphabetSize)
       val newTopics = getTopics(newParameters,
           alphabetSize,
@@ -132,9 +132,10 @@ class PLSA(@transient protected val sc: SparkContext,
   }
 
   private def getGlobalCounters(parameters: RDD[DocumentParameters],
-                                  topics: Broadcast[Array[Array[Float]]], alphabetSize: Int) = {
+                                  topics: Broadcast[Array[Array[Float]]],
+                                  alphabetSize: Int) = {
     parameters.aggregate[GlobalCounters](GlobalCounters(numberOfTopics,
-      alphabetSize))((thatOne, otherOne) => thatOne.add(otherOne, topics, alphabetSize),
+      alphabetSize))((thatOne, otherOne) => thatOne.add(otherOne, topics.value, alphabetSize),
         (thatOne, otherOne) => thatOne + otherOne)
   }
 

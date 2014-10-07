@@ -17,7 +17,6 @@
 
 package org.apache.spark.mllib.clustering.topicmodeling.topicmodels
 
-import org.apache.spark.broadcast.Broadcast
 
 
 /**
@@ -46,12 +45,12 @@ private[topicmodels] class GlobalCounters(val wordsFromTopics: Array[Array[Float
   /**
    * calculates and add local parameters to global parameters
    * @param that DocumentParameters.
-   * @param topics broadcasted words by topics distribution
+   * @param topics words by topics distribution
    * @param alphabetSize number of unique words
    * @return GlobalParameters
    */
   private[topicmodels] def add(that: DocumentParameters,
-     topics: Broadcast[Array[Array[Float]]],
+     topics: Array[Array[Float]],
      alphabetSize: Int) = {
 
     val wordsFromTopic = that.wordsFromTopics(topics)

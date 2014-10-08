@@ -117,6 +117,7 @@ class PLSA(@transient protected val sc: SparkContext,
           foldingIn)
 
       parameters.unpersist()
+      topicsBC.unpersist()
 
       newIteration(newParameters,
         newTopics,

@@ -137,6 +137,8 @@ class RobustPLSA(@transient protected val sc: SparkContext,
       val newBackground = sc.broadcast(getNewBackground(globalCounters))
 
       parameters.unpersist()
+      topicsBC.unpersist()
+      backgroundBC.unpersist()
 
       newIteration(newParameters,
         newTopics,

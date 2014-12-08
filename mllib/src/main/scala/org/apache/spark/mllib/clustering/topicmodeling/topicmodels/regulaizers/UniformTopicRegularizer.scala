@@ -21,7 +21,7 @@ package org.apache.spark.mllib.clustering.topicmodeling.topicmodels.regulaizers
  * usage of this prior is equivalent to use of no prior
  */
 class UniformTopicRegularizer extends TopicsRegularizer {
-  override def apply(topics: Array[Array[Float]]): Float = 0
+  private[mllib] override def apply(topics: Array[Array[Float]]): Float = 0
 
-  override def regularize(topics: Array[Array[Float]], oldTopics: Array[Array[Float]]): Unit = {}
+  private[mllib] override def regularize(topics: Array[Array[Float]], oldTopics: Array[Array[Float]]): Unit = {}
 }

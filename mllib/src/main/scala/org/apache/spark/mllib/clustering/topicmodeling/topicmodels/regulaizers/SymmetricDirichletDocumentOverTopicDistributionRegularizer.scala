@@ -27,9 +27,9 @@ class SymmetricDirichletDocumentOverTopicDistributionRegularizer(protected val a
     extends DocumentOverTopicDistributionRegularizer
     with SymmetricDirichletHelper
     with MatrixInPlaceModification {
-  override def apply(theta: Array[Float]): Float = dirichletLogLikelihood(theta)
+  private[mllib] override def apply(theta: Array[Float]): Float = dirichletLogLikelihood(theta)
 
-  override def regularize(theta: Array[Float], oldTheta: Array[Float]) = {
+  private[mllib] override def regularize(theta: Array[Float], oldTheta: Array[Float]) = {
     shift(theta, (theta, i) => theta(i) += alpha - 1)
     super.regularize(theta, oldTheta)
   }

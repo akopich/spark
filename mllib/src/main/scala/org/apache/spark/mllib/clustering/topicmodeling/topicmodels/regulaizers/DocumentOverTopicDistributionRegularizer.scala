@@ -27,7 +27,7 @@ trait DocumentOverTopicDistributionRegularizer extends Serializable with MatrixI
    * @param theta a distribution of a document over topics
    * @return the log of prior probability. Is used only for correct perplexity calculation
    */
-  def apply(theta: Array[Float]): Float
+  private[mllib] def apply(theta: Array[Float]): Float
 
   /**
    * This implementation performs positive cut for every value of theta
@@ -36,6 +36,6 @@ trait DocumentOverTopicDistributionRegularizer extends Serializable with MatrixI
    * @param oldTheta -- a distribution of the document over topics obtained in the previous
    *                 iterations
    */
-  def regularize(thetaCnt: Array[Float], oldTheta: Array[Float]): Unit =
+  private[mllib] def regularize(thetaCnt: Array[Float], oldTheta: Array[Float]): Unit =
     shift(thetaCnt, (x,i) => x(i) = math.max(0, x(i)))
 }

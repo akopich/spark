@@ -21,7 +21,7 @@ package org.apache.spark.mllib.clustering.topicmodeling.topicmodels.regulaizers
  * usage of this prior is equivalent to use of no prior
  */
 class UniformDocumentOverTopicRegularizer extends DocumentOverTopicDistributionRegularizer {
-  override def apply(theta: Array[Float]): Float = 0
+  private[mllib] override def apply(theta: Array[Float]): Float = 0
 
-  override def regularize(theta: Array[Float], oldTheta: Array[Float]): Unit = {}
+  private[mllib] override def regularize(theta: Array[Float], oldTheta: Array[Float]): Unit = {}
 }

@@ -27,7 +27,7 @@ trait TopicsRegularizer extends MatrixInPlaceModification {
    * @param topics \Phi matrix
    * @return log prior probability of \Phi. Is used for perplexity calculation only
    */
-  def apply(topics: Array[Array[Float]]): Float
+  private[mllib] def apply(topics: Array[Array[Float]]): Float
 
   /**
    * This implementation performs a positive cut on every element
@@ -35,6 +35,6 @@ trait TopicsRegularizer extends MatrixInPlaceModification {
    *                  notation)
    * @param oldTopics
    */
-  def regularize(topicsCnt: Array[Array[Float]], oldTopics: Array[Array[Float]]): Unit =
+  private[mllib] def regularize(topicsCnt: Array[Array[Float]], oldTopics: Array[Array[Float]]): Unit =
     shift(topicsCnt, (x, i, j) => x(i)(j) = math.max(0, x(i)(j)))
 }

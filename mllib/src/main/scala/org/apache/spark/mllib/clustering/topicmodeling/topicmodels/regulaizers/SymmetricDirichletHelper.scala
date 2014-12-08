@@ -22,7 +22,7 @@ package org.apache.spark.mllib.clustering.topicmodeling.topicmodels.regulaizers
 import cern.jet.stat.Gamma
 
 private[regulaizers] trait SymmetricDirichletHelper {
-  protected val alpha: Float
+  private[mllib] val alpha: Float
 
   private def logBeta(x: Array[Float]) = {
     val n = x.size

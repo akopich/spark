@@ -23,7 +23,7 @@ package org.apache.spark.mllib.clustering.topicmodeling.topicmodels.regulaizers
  * Defines symmetric Dirichlet prior
  * @param alpha - paarmeter of Dirichlet distribution
  */
-class SymmetricDirichletDocumentOverTopicDistributionRegularizer(protected val alpha: Float)
+class SymmetricDirichletDocumentOverTopicDistributionRegularizer(private[mllib] val alpha: Float)
     extends DocumentOverTopicDistributionRegularizer
     with SymmetricDirichletHelper
     with MatrixInPlaceModification {

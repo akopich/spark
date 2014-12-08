@@ -32,7 +32,7 @@ class DocumentParameters(val document: Document,
                          val theta: Array[Float],
                          private val regularizer: DocumentOverTopicDistributionRegularizer)
     extends Serializable {
-  protected def getZ(topics: Array[Array[Float]]) = {
+  private def getZ(topics: Array[Array[Float]]) = {
     val numberOfTopics = topics.size
 
     document.tokens.mapActivePairs { case (word, n) =>
@@ -59,7 +59,7 @@ class DocumentParameters(val document: Document,
     array
   }
 
-  protected def forWithIndex(array: Array[Float])(operation: (Float, Int) => Unit) {
+  private def forWithIndex(array: Array[Float])(operation: (Float, Int) => Unit) {
     var i = 0
     val size = array.size
     while (i < size) {

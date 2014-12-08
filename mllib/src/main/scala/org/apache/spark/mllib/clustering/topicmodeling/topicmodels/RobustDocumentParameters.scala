@@ -36,7 +36,7 @@ class RobustDocumentParameters(document: Document,
                                regularizer: DocumentOverTopicDistributionRegularizer)
   extends DocumentParameters(document, theta, regularizer) {
 
-  protected def getZ(topics: Array[Array[Float]],
+  private def getZ(topics: Array[Array[Float]],
                      background: Array[Float],
                      eps: Float,
                      gamma: Float) = {
@@ -61,7 +61,7 @@ class RobustDocumentParameters(document: Document,
   }
 
 
-  protected def wordToBackgroundCnt(background: Array[Float],
+  private def wordToBackgroundCnt(background: Array[Float],
       eps: Float,
       gamma: Float,
       Z: SparseVector[Float]): SparseVector[Float] = {
@@ -71,7 +71,7 @@ class RobustDocumentParameters(document: Document,
   }
 
 
-  protected def getNoise(eps: Float, Z: SparseVector[Float]) = {
+  private def getNoise(eps: Float, Z: SparseVector[Float]) = {
     val newWordsFromNoise = document.tokens.mapActivePairs { case (word,num) =>
       eps * noise(word) * num / Z(word)
     }
@@ -88,7 +88,7 @@ class RobustDocumentParameters(document: Document,
   /**
    * calculates a new distribution of this document by topic, corresponding to the new topics
    */
-  def getNewTheta(topics: Array[Array[Float]],
+  private[topicmodels] def getNewTheta(topics: Array[Array[Float]],
       background: Array[Float],
       eps: Float,
       gamma: Float) = {

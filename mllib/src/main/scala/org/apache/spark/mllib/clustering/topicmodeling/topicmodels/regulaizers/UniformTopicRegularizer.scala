@@ -23,5 +23,6 @@ package org.apache.spark.mllib.clustering.topicmodeling.topicmodels.regulaizers
 class UniformTopicRegularizer extends TopicsRegularizer {
   private[mllib] override def apply(topics: Array[Array[Float]]): Float = 0
 
-  private[mllib] override def regularize(topics: Array[Array[Float]], oldTopics: Array[Array[Float]]): Unit = {}
+  private[mllib] override def regularize(topics: Array[Array[Float]],
+                                         oldTopics: Array[Array[Float]]): Unit = {}
 }

@@ -35,6 +35,7 @@ trait TopicsRegularizer extends MatrixInPlaceModification {
    *                  notation)
    * @param oldTopics
    */
-  private[mllib] def regularize(topicsCnt: Array[Array[Float]], oldTopics: Array[Array[Float]]): Unit =
+  private[mllib] def regularize(topicsCnt: Array[Array[Float]],
+                                oldTopics: Array[Array[Float]]): Unit =
     shift(topicsCnt, (x, i, j) => x(i)(j) = math.max(0, x(i)(j)))
 }
